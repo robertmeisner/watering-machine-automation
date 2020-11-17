@@ -1,0 +1,29 @@
+################################################################################
+# Node-RED Stack or Compose
+################################################################################
+# docker stack deploy node-red --compose-file docker-compose-node-red.yml
+# docker-compose -f docker-compose-node-red.yml -p myNoderedProject up
+################################################################################
+version: "3.7"
+
+services:
+  node-red:
+    image: catchit/node-red
+    build: ./node-red/ 
+    restart: always
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "1880:1880"
+    volumes:
+      - ./node-red/data:/data
+  mosquitto:
+    image: catchit/mosquitto
+    build: ./mosquitto/ 
+    restart: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/data/data:/mosquitto/data 
+      - ./mosquitto/data/log:/mosquitto/log

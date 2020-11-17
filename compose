@@ -1,0 +1,40 @@
+# see https://github.com/docker/compose/issues/4675#issuecomment-584526950
+x-volumes:
+  &volumes
+  volumes:
+    - type: volume
+      source: code
+      target: /var/www/html/
+    - type: volume
+      source: uploads
+      target: /var/www/html/storage/app/public/
+    - type: volume
+      source: unclaimed_uploads
+      target: /var/www/html/storage/app/uploads/
+    - type: bind
+      source: ./production.env
+      target: /var/www/html/.env
+      read_only: true
+
+services:
+
+  nginx:
+    image: nginx:1.17.8
+    networks:
+      - docker
+      - web
+    restart: always
+    <<: *volumes
+
+  php:
+    image: php:7.3-fpm-alpine
+    restart: always
+    networks:
+      - docker
+    <<: *volumes
+
+volumes:
+
+  code:
+  uploads:
+  unclaimed_uploads:
